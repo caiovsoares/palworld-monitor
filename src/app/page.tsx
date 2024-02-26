@@ -8,7 +8,7 @@ export default async function Home() {
   const { isOnline, onlinePlayers, playerList } = await checkOnlinePlayers();
   return (
     <div
-      className='flex flex-col items-center gap-10 mt-10' /*className="bg-[rgb(244,215,1)]"*/
+      className='flex flex-col items-center gap-10 py-10' /*className="bg-[rgb(244,215,1)]"*/
     >
       <div>
         <Image
