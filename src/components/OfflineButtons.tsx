@@ -16,11 +16,19 @@ export default function OnlineButtons() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   return (
-    <ApiButton
-      isLoading={isLoading}
-      setIsLoading={setIsLoading}
-      command='start'
-      text='Ligar'
-    />
+    <>
+      <ApiButton
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
+        command='start'
+        text='Ligar'
+      />
+      <ApiButton
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
+        command='restart'
+        text='Reiniciar'
+      />
+    </>
   );
 }

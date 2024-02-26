@@ -3,11 +3,6 @@
 import { useState } from 'react';
 import ApiButton from './ApiButton';
 
-type type = {
-  command: string;
-  text: string;
-};
-
 function delay(time: number) {
   return new Promise((resolve) => setTimeout(resolve, time));
 }

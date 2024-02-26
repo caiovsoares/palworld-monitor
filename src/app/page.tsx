@@ -3,7 +3,7 @@ import OnlineButtons from '@/components/OnlineButtons';
 import checkOnlinePlayers from '@/lib/rcon';
 import Image from 'next/image';
 
-export const revalidate = 20;
+export const revalidate = 5;
 export default async function Home() {
   const { isOnline, onlinePlayers, playerList } = await checkOnlinePlayers();
   return (
