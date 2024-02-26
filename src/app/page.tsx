@@ -1,12 +1,11 @@
-import ApiButton from '@/components/ApiButton';
 import OfflineButtons from '@/components/OfflineButtons';
 import OnlineButtons from '@/components/OnlineButtons';
 import checkOnlinePlayers from '@/lib/rcon';
 import Image from 'next/image';
 
+export const revalidate = 20;
 export default async function Home() {
   const { isOnline, onlinePlayers, playerList } = await checkOnlinePlayers();
-
   return (
     <div
       className='flex flex-col items-center gap-10 mt-10' /*className="bg-[rgb(244,215,1)]"*/
