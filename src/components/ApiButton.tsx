@@ -25,7 +25,7 @@ export default function ApiButton({
     if (isLoading) return;
     setIsLoading(true);
     await fetch(`/api/${command}`, { method: 'POST' });
-    await delay(5000);
+    await delay(3000);
     router.refresh();
     setIsLoading(false);
   };

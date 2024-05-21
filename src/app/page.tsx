@@ -5,11 +5,17 @@ import Image from 'next/image';
 
 export const revalidate = 5;
 export default async function Home() {
-  const { isOnline, onlinePlayers, playerList } = await checkOnlinePlayers();
+  const { onlinePlayers, playerList } = (await checkOnlinePlayers()) || {
+    onlinePlayers: 0,
+    playerList: [],
+  };
+  const response = await fetch('http://localhost:3333/api/isonline', {
+    method: 'POST',
+    cache: 'no-store',
+  });
+  const { isOnline } = await response.json();
   return (
-    <div
-      className='flex flex-col items-center gap-10 py-10' /*className="bg-[rgb(244,215,1)]"*/
-    >
+    <div className='flex flex-col items-center gap-10 py-10 '>
       <div>
         <Image
           className='rounded-full border border-black'
