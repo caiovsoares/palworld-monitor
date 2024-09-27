@@ -24,10 +24,17 @@ export default function ApiButton({
   const onClick = async () => {
     if (isLoading) return;
     setIsLoading(true);
-    await fetch(`/api/${command}`, { method: 'POST' });
-    await delay(3000);
-    router.refresh();
-    setIsLoading(false);
+    const response = await (
+      await fetch(`/api/${command}`, { method: 'POST' })
+    ).json();
+    if (response.error) {
+      alert(response.error);
+      setIsLoading(false);
+    } else {
+      await delay(6000);
+      router.refresh();
+      setIsLoading(false);
+    }
   };
 
   return (
