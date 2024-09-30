@@ -8,6 +8,13 @@ import { redirect } from 'next/navigation';
 
 export const revalidate = 5;
 export default async function Home() {
+  const fixPosition = (player: Player) => {
+    const posX = player.location_x;
+    const posY = player.location_y;
+    player.location_x = (posY - 157664.55791065) / 462.962962963;
+    player.location_y = (posX + 123467.1611767) / 462.962962963;
+  };
+
   const response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/isonline`, {
     method: 'POST',
     cache: 'no-store',
@@ -18,7 +25,7 @@ export default async function Home() {
     playerList,
   }: { isOnline: boolean; onlinePlayers: number; playerList: Player[] } =
     await response.json();
-
+  playerList.forEach(fixPosition);
   const ses = await getSession();
   if (!ses) redirect('/api/auth/signin');
 
@@ -50,12 +57,22 @@ export default async function Home() {
       </div>
       <div className='flex flex-col items-center px-20 py-4 gap-2 rounded-2xl bg-[rgb(244,215,1)] border border-black'>
         <p className='font-semibold text-2xl'>Jogadores Online:</p>
-        <div className='flex flex-col gap-1 items-center'>
+        <div className='grid grid-cols-[1fr_80px_170px_80px] gap-2'>
           {playerList.map((player) => (
-            <p key={player.playerId}>
-              {player.name} - Lv.{player.level} - (X:{player.location_x} Y:
-              {player.location_y}) - ping:{player.ping}
-            </p>
+            <>
+              <div className='text-center font-semibold'>{player.name}</div>
+              <div className='grow text-center'>
+                Lv.{' '}
+                {player.level.toLocaleString('en-US', {
+                  minimumIntegerDigits: 2,
+                })}
+              </div>
+              <div className='text-center'>
+                (X:
+                {player.location_x.toFixed(1)} Y:{player.location_y.toFixed(1)})
+              </div>
+              <div className='text-center'>ping:{player.ping.toFixed(0)}</div>
+            </>
           ))}
         </div>
       </div>
