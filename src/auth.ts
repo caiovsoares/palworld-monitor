@@ -11,7 +11,8 @@ const authOptions: AuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials, req) {
-        const user: User = { id: randomUUID() };
+        const uuid = randomUUID();
+        const user: User = { id: uuid, name: uuid };
         if (credentials?.password == process.env.PASSWORD) {
           return user;
         } else {

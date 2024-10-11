@@ -5,9 +5,12 @@ import OnlineButtons from '@/components/OnlineButtons';
 import { Player } from '@/lib/types';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
+import palworldApi from '@/lib/palworldApi';
 
 export const revalidate = 5;
 export default async function Home() {
+  const ses = await getSession();
+  if (!ses?.user?.name) redirect('/api/auth/signin');
   const fixPosition = (player: Player) => {
     const posX = player.location_x;
     const posY = player.location_y;
@@ -15,19 +18,19 @@ export default async function Home() {
     player.location_y = (posX + 123467.1611767) / 462.962962963;
   };
 
-  const response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/isonline`, {
-    method: 'POST',
-    cache: 'no-store',
-  });
-  const {
-    isOnline,
-    onlinePlayers,
-    playerList,
-  }: { isOnline: boolean; onlinePlayers: number; playerList: Player[] } =
-    await response.json();
+  let isOnline = false;
+  let onlinePlayers = 0;
+  let playerList: Player[] = [];
+
+  const response = (
+    await palworldApi
+      .get('players')
+      .catch((e) => ({ data: { error: 'Cannot GET RestAPI', players: [] } }))
+  ).data;
+  isOnline = !response.error;
+  playerList = response.players;
+  onlinePlayers = playerList.length;
   playerList.forEach(fixPosition);
-  const ses = await getSession();
-  if (!ses) redirect('/api/auth/signin');
 
   return (
     <div className='flex flex-col items-center gap-10 py-10 '>
@@ -51,9 +54,7 @@ export default async function Home() {
           />
           <p>{isOnline ? 'Online' : 'Offline'}</p>
         </div>
-        <p>
-          {onlinePlayers} Jogadores Online {ses?.user?.name}
-        </p>
+        <p>{onlinePlayers} Jogadores Online</p>
       </div>
       <div className='flex flex-col items-center px-20 py-4 gap-2 rounded-2xl bg-[rgb(244,215,1)] border border-black'>
         <p className='font-semibold text-2xl'>Jogadores Online:</p>

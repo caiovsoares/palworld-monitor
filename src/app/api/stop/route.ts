@@ -1,11 +1,21 @@
+import palworldApi from '@/lib/palworldApi';
 import { execSync } from 'child_process';
+import { getSession } from '@/auth';
 export async function POST() {
-  const { onlinePlayers } = await (
-    await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/isonline`, {
-      method: 'POST',
-    })
-  ).json();
-  if (onlinePlayers > 0)
+  const session = await getSession();
+  if (!session?.user?.name)
+    return Response.json(
+      { message: 'Unauthorized' },
+      { status: 401, statusText: 'Unauthorized' }
+    );
+
+  const { players } = (
+    await palworldApi
+      .get('players')
+      .catch((e) => ({ data: { error: 'Cannot GET RestAPI', players: [] } }))
+  ).data;
+
+  if (players.length > 0)
     return Response.json({
       message:
         'Não é possível parar o servidor enquanto houver jogadores online',
